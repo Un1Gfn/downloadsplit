@@ -49,7 +49,11 @@ jobs:
           name: Download
           command: |
             cd ~
-            wget -O $F "$L"
+            # wget -O $F "$L"
+            # 28511303423 byte
+            # dd if=/dev/zero of=$F bs=28511303423 count=1
+            # 27 GiB
+            dd if=/dev/zero of=$F bs=1024 count=$((1024*1024*27))
       - run:
           name: Split
           command: |
