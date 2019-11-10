@@ -1,0 +1,43 @@
+# https://circleci.com/docs/2.0/language-android/#sample-configuration
+# https://github.com/shadowsocks/shadowsocks-android/blob/master/.circleci/config.yml
+
+version: 2
+jobs:
+  build:
+    environment:
+      WD: code
+    working_directory: ~/code
+    docker:
+      # https://circleci.com/docs/2.0/circleci-images/
+      # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/android/images
+      # https://en.wikipedia.org/wiki/Debian_version_history
+      # - image: debian:stretch
+      - image: ubuntu:disco
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: Stop for SSH
+          command: |
+            false
+      # - run:
+      #     name: Download and extract boot.img
+      #     command: |
+      #       apt update
+      #       apt install -y wget
+      #       apt install -y unzip
+      #       wget -O walleye.zip https://dl.google.com/dl/android/aosp/walleye-qp1a.191005.007.a1-factory-78ad96e7.zip
+      #       unzip walleye.zip
+      #       cd walleye-*/
+      #       unzip image-walleye-*.zip boot.img
+      #       mv boot.img ~/code/
+      # - store_artifacts:
+      #     path: boot.img
+      #     destination: boot.img
+      # - store_artifacts:
+      #     path: tv/build/outputs/apk/release/
+      #     destination: tv
+
+      # - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+      #     path: app/build/test-results
+      # # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
