@@ -49,11 +49,9 @@ jobs:
           name: Download
           command: |
             cd ~
-            # wget -O $F "$L"
-            # 28511303423 byte
-            # dd if=/dev/zero of=$F bs=28511303423 count=1
+            wget -O $F "$L"
             # 27 GiB
-            dd if=/dev/zero of=$F bs=1024 count=$((1024*1024*27))
+            # dd if=/dev/zero of=$F bs=1024 count=$((1024*1024*27))
       - run:
           name: Split
           command: |
@@ -62,7 +60,7 @@ jobs:
             cd ~
             mkdir split
             cd split
-            split -b $((999*999*2999)) ~/$F
+            split --verbose -b $((999*999*2999)) ~/$F
       - run:
           name: Checksum
           command: |
@@ -74,5 +72,5 @@ jobs:
           # no_output_timeout: 30m
           # no_output_timeout: 1.5h
       - store_artifacts:
-          path: code/
+          path: split/
           destination: Xilinx_Vivado_2019.2_1024_1831
