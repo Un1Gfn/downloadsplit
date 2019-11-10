@@ -1,11 +1,30 @@
 # https://circleci.com/docs/2.0/language-android/#sample-configuration
 # https://github.com/shadowsocks/shadowsocks-android/blob/master/.circleci/config.yml
 
+# root@f199f32871af:~# df -h
+# Filesystem      Size  Used Avail Use% Mounted on
+# none            826G  272G  554G  33% /
+# tmpfs            64M     0   64M   0% /dev
+# tmpfs            35G     0   35G   0% /sys/fs/cgroup
+# /dev/nvme1n1p1  9.7G  2.5G  7.3G  26% /dev/init
+# /dev/nvme0n1    826G  272G  554G  33% /etc/hosts
+# shm              30G     0   30G   0% /dev/shm
+# udev             35G     0   35G   0% /dev/tty
+# tmpfs            35G     0   35G   0% /proc/acpi
+# tmpfs            35G     0   35G   0% /proc/scsi
+# tmpfs            35G     0   35G   0% /sys/firmware
+
+# rm ./garbage
+# dd if=/dev/zero of=./garbage bs=1024 count=$((1024*1024*30)) status=progress
+
 version: 2
 jobs:
   build:
     environment:
-      WD: code
+      WD: 'code'
+      L:  'https://xilinx-ax-dl.entitlenow.com/dl/ul/2019/10/30/R210258819/Xilinx_Vivado_2019.2_1024_1831.tar.gz/795f3fdb85646b7be13821ee5f836460/5DC7DDB0?akdm=0&filename=Xilinx_Vivado_2019.2_1024_1831.tar.gz'
+      F:  'Xilinx_Vivado_2019.2_1024_1831.tar.gz'
+      C:  'md5.txt'
     working_directory: ~/code
     docker:
       # https://circleci.com/docs/2.0/circleci-images/
@@ -15,29 +34,41 @@ jobs:
       - image: ubuntu:disco
     resource_class: medium
     steps:
-      - checkout
-      - run:
-          name: Stop for SSH
-          command: |
-            false
+      # # Checkout introduces garbage into ~/code
+      # - checkout
       # - run:
-      #     name: Download and extract boot.img
+      #     name: Stop for SSH
       #     command: |
-      #       apt update
-      #       apt install -y wget
-      #       apt install -y unzip
-      #       wget -O walleye.zip https://dl.google.com/dl/android/aosp/walleye-qp1a.191005.007.a1-factory-78ad96e7.zip
-      #       unzip walleye.zip
-      #       cd walleye-*/
-      #       unzip image-walleye-*.zip boot.img
-      #       mv boot.img ~/code/
-      # - store_artifacts:
-      #     path: boot.img
-      #     destination: boot.img
-      # - store_artifacts:
-      #     path: tv/build/outputs/apk/release/
-      #     destination: tv
-
-      # - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-      #     path: app/build/test-results
-      # # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
+      #       false
+      - run:
+          name: Prepare
+          command: |
+            apt update
+            apt install -y wget
+      - run:
+          name: Download
+          command: |
+            cd ~
+            wget -O $F "$L"
+      - run:
+          name: Split
+          command: |
+            # https://circleci.com/docs/2.0/artifacts/#artifacts-overview
+            # 3GB curl file size limit
+            cd ~
+            mkdir split
+            cd split
+            split -b $((999*999*2999)) ~/$F
+      - run:
+          name: Checksum
+          command: |
+            cd ~/split
+            touch $C
+            echo "f3a04285830d8d060b1c368618b56a66  https://www.xilinx.com/support/download.html" | tee -a $C
+            md5sum ../$F | tee -a $C
+            md5sum x* | tee -a $C
+          # no_output_timeout: 30m
+          # no_output_timeout: 1.5h
+      - store_artifacts:
+          path: code/
+          destination: Xilinx_Vivado_2019.2_1024_1831
