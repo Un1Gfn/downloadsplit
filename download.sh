@@ -3,11 +3,12 @@
 # https://stackoverflow.com/a/12298757/8243991
 # https://stackoverflow.com/a/5920355/8243991
 
-exit 1
+URIPREFIX="https://8-220739498-gh.circle-artifacts.com/0/split/"
+SEGMENTS=(md5.txt x{a{a..z},ba})
 
-URIPREFIX="https://lsdjfskdf.xcvx.iwmjefms/"
-# SEGMENTS=$(echo x{a..z}{a..z})
-SEGMENTS=(x{a..b}{1..2})
+# for i in "${SEGMENTS[@]}"; do
+#   echo "$i"
+# done
 
 function trapf {
   echo
