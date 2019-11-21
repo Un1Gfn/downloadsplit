@@ -14,29 +14,23 @@
 # tmpfs            35G     0   35G   0% /proc/scsi
 # tmpfs            35G     0   35G   0% /sys/firmware
 
-# rm ./garbage
-# dd if=/dev/zero of=./garbage bs=1024 count=$((1024*1024*30)) status=progress
-
 version: 2
 jobs:
   build:
     # https://circleci.com/docs/2.0/configuration-reference/#environment
     environment:
-      WD: 'code'
-      L:  'https://xilinx-ax-dl.entitlenow.com/dl/ul/2019/10/30/R210258819/Xilinx_Vivado_2019.2_1024_1831.tar.gz/795f3fdb85646b7be13821ee5f836460/5DC7DDB0?akdm=0&filename=Xilinx_Vivado_2019.2_1024_1831.tar.gz'
-      F:  'Xilinx_Vivado_2019.2_1024_1831.tar.gz'
+      L:  'https://xilinx-ax-dl.entitlenow.com/dl/ul/2019/11/08/R210260632/Xilinx_Vivado_2019.2_1106_2127.tar.gz/e8553466042cb8b9dcd2795aafd3637f/5DD6EFA6?akdm=0&filename=Xilinx_Vivado_2019.2_1106_2127.tar.gz'
+      H:  'e2b2762964ef5f014591b13d77d823ab'
+      F:  'vivado.tar.gz'
       C:  'md5.txt'
     working_directory: ~/code
     docker:
       # https://circleci.com/docs/2.0/circleci-images/
       # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/android/images
       # https://en.wikipedia.org/wiki/Debian_version_history
-      # - image: debian:stretch
       - image: ubuntu:disco
     resource_class: medium
     steps:
-      # # Checkout introduces garbage into ~/code
-      # - checkout
       # - run:
       #     name: Stop for SSH
       #     command: |
@@ -51,27 +45,24 @@ jobs:
           command: |
             cd ~
             wget -O $F "$L"
-            # 27 GiB
-            # dd if=/dev/zero of=$F bs=1024 count=$((1024*1024*27))
       - run:
           name: Split
           command: |
-            # https://circleci.com/docs/2.0/artifacts/#artifacts-overview
-            # 3GB curl file size limit
             cd ~
             mkdir split
             cd split
-            split --verbose -b $((999*999*2999)) ~/$F
+            split --verbose -b $((1024*1024*1024)) ~/$F
       - run:
           name: Checksum
           command: |
             cd ~/split
             touch $C
-            echo "f3a04285830d8d060b1c368618b56a66  https://www.xilinx.com/support/download.html" | tee -a $C
+            echo "$H https://www.xilinx.com/support/download.html" | tee -a $C
             md5sum ../$F | tee -a $C
             md5sum x* | tee -a $C
           # no_output_timeout: 30m
           # no_output_timeout: 1.5h
       - store_artifacts:
+          # https://circleci.com/docs/2.0/artifacts/#artifacts-overview
           path: ~/split/
-          destination: Xilinx_Vivado_2019.2_1024_1831
+          destination: split
