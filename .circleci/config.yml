@@ -52,12 +52,14 @@ jobs:
             mkdir split
             cd split
             split --verbose -b $((1024*1024*1024)) ~/$F
+            ls -l
+            ls -lh
       - run:
           name: Checksum
           command: |
             cd ~/split
             touch $C
-            echo "$H https://www.xilinx.com/support/download.html" | tee -a $C
+            echo "$H  https://www.xilinx.com/support/download.html" | tee -a $C
             md5sum ../$F | tee -a $C
             md5sum x* | tee -a $C
           # no_output_timeout: 30m

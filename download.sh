@@ -22,7 +22,7 @@ ls -l
 
 for i in "${SEGMENTS[@]}"; do
   if [ ! -e "$i" ]; then
-    proxychains wget "${URIPREFIX}${i}"
+    echo -e "\033[7m $(date) \033[0m";proxychains wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
   else
     SZ=$(wc -c <"$i")
     if [ "$SZ" -eq $((1024*1024*1024)) ]; then
@@ -35,7 +35,7 @@ for i in "${SEGMENTS[@]}"; do
         echo -n "Delete $i and download again?..."
         read -r
         rm -v "$i"
-        proxychains wget "${URIPREFIX}${i}"
+        echo -e "\033[7m $(date) \033[0m";proxychains wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
       fi
     fi
   fi
