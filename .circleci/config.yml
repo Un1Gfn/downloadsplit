@@ -62,6 +62,7 @@ jobs:
             echo "$H  https://www.xilinx.com/support/download.html" | tee -a $C
             md5sum ../$F | tee -a $C
             md5sum x* | tee -a $C
+            cat md5.txt | tr -s ' ' >"$C".onespace
           # no_output_timeout: 30m
           # no_output_timeout: 1.5h
       - store_artifacts:

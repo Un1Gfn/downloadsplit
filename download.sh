@@ -13,14 +13,17 @@ SEGMENTS=(md5.txt x{a{a..z},ba})
 function trapf {
   echo
   echo SIGINT
+  echo
   exit 1
 }
  
 trap trapf SIGINT
 
+echo
 ls -l
 
 for i in "${SEGMENTS[@]}"; do
+  echo
   if [ ! -e "$i" ]; then
     echo -e "\033[7m $(date) \033[0m";proxychains wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
   else
@@ -32,11 +35,16 @@ for i in "${SEGMENTS[@]}"; do
         echo "$i is the last segment"
       else
         echo "$i is $(numfmt --to=iec-i "$SZ") ($SZ bytes)"
-        echo -n "Delete $i and download again?..."
-        read -r
-        rm -v "$i"
-        echo -e "\033[7m $(date) \033[0m";proxychains wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
+        # echo -n "Delete $i and download again?..."
+        # read -r
+        read -e -p "Delete $i and download again? [yn] " -r YN
+        if [ "$YN" == y ]; then
+          rm -v "$i"
+          echo -e "\033[7m $(date) \033[0m";proxychains wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
+        fi
       fi
     fi
   fi
 done
+
+echo
