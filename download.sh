@@ -4,7 +4,7 @@
 # https://stackoverflow.com/a/5920355/8243991
 
 URIPREFIX="https://8-220739498-gh.circle-artifacts.com/0/split/"
-SEGMENTS=(md5.txt x{a{a..z},ba})
+SEGMENTS=(x{a{a..z},ba})
 
 # for i in "${SEGMENTS[@]}"; do
 #   echo "$i"
@@ -25,7 +25,7 @@ ls -l
 for i in "${SEGMENTS[@]}"; do
   echo
   if [ ! -e "$i" ]; then
-    echo -e "\033[7m $(date) \033[0m";proxychains wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
+    echo -e "\033[7m $(date) \033[0m";wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
   else
     SZ=$(wc -c <"$i")
     if [ "$SZ" -eq $((1024*1024*1024)) ]; then
@@ -40,7 +40,7 @@ for i in "${SEGMENTS[@]}"; do
         read -e -p "Delete $i and download again? [yn] " -r YN
         if [ "$YN" == y ]; then
           rm -v "$i"
-          echo -e "\033[7m $(date) \033[0m";proxychains wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
+          echo -e "\033[7m $(date) \033[0m";wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
         fi
       fi
     fi
@@ -48,3 +48,5 @@ for i in "${SEGMENTS[@]}"; do
 done
 
 echo
+
+# md5sum -c md5.txt.onespace
