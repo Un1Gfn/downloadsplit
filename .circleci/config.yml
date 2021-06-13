@@ -29,7 +29,8 @@ jobs:
       # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/android/images
       # https://en.wikipedia.org/wiki/Debian_version_history
       # https://wiki.ubuntu.com/Releases
-      - image: ubuntu:hirsute # 21.04
+      # - image: ubuntu:hirsute # 21.04 # https://stackoverflow.com/q/66319610
+      - image: ubuntu:focal     # 20.04.2 LTS
     resource_class: medium
     steps:
       # - run:
@@ -44,6 +45,7 @@ jobs:
       - run:
           name: Download
           command: |
+            lsb_release -a
             cd ~
             # https://superuser.com/questions/426877
             # https://addons.mozilla.org/en-US/firefox/search/?q=wget
