@@ -18,11 +18,11 @@ version: 2
 jobs:
   build:
     # https://circleci.com/docs/2.0/configuration-reference/#environment
-    environment:
-      L:  'https://xilinx-ax-dl.entitlenow.com/dl/ul/2019/11/08/R210260632/Xilinx_Vivado_2019.2_1106_2127.tar.gz/e8553466042cb8b9dcd2795aafd3637f/5DD6EFA6?akdm=0&filename=Xilinx_Vivado_2019.2_1106_2127.tar.gz'
-      H:  'e2b2762964ef5f014591b13d77d823ab'
-      F:  'vivado.tar.gz'
-      C:  'md5.txt'
+    # environment:
+    #   L:  'https://'
+    #   H:  'ffffffffffffffffffffffffffffffff'
+    #   F:  'xxx.7z'
+    #   C:  'xxxsum.txt'
     working_directory: ~/code
     docker:
       # https://circleci.com/docs/2.0/circleci-images/
@@ -39,30 +39,32 @@ jobs:
           name: Prepare
           command: |
             apt update
-            apt install -y wget
+            apt install -y curl wget
       - run:
           name: Download
           command: |
             cd ~
-            wget -O $F "$L"
+            # https://superuser.com/questions/426877
+            # https://addons.mozilla.org/en-US/firefox/search/?q=wget
+            # https://addons.mozilla.org/en-US/firefox/addon/cliget
+            # curl/wget ... --cookie '...' ... --output 'Final Fantasy X (Japan).7z'
+            curl --header 'Host: files.romspure.com' --user-agent 'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0' --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' --header 'Accept-Language: en-US,en;q=0.5' --referer 'https://romsforever.co/' --cookie 'cf_chl_2=3d13706088c25c0; cf_chl_prog=x9; cf_clearance=b33d5809f54352a08cd72713e758814cbe9769cc-1623601281-0-150' --header 'Upgrade-Insecure-Requests: 1' 'https://files.romspure.com/PS2/NTSC-Asia/Final%20Fantasy%20X%20%28Japan%29.7z?token=' --output 'Final Fantasy X (Japan).7z'
       - run:
           name: Split
           command: |
             cd ~
             mkdir split
             cd split
-            split --verbose -b $((1024*1024*1024)) ~/$F
+            split --verbose -b $((1024*1024*1024)) ~/'Final Fantasy X (Japan).7z'
             ls -l
             ls -lh
       - run:
           name: Checksum
           command: |
             cd ~/split
-            touch $C
-            echo "$H  https://www.xilinx.com/support/download.html" | tee -a $C
-            md5sum ../$F | tee -a $C
-            md5sum x* | tee -a $C
-            cat md5.txt | tr -s ' ' >"$C".onespace
+            sha1sum * | tee sha1sum.txt
+            sha1sum ../'Final Fantasy X (Japan).7z' | tee -a sha1sum.txt
+            # cat sha1sum.txt | tr -s ' ' >"sha1sum.txt".onespace
           # no_output_timeout: 30m
           # no_output_timeout: 1.5h
       - store_artifacts:

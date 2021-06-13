@@ -1,4 +1,6 @@
 #!/bin/bash
+# This script does not run on CI
+# This script collects splited artifacts from CI
 
 # https://stackoverflow.com/a/12298757/8243991
 # https://stackoverflow.com/a/5920355/8243991
