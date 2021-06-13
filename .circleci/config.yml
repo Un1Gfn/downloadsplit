@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Download
           command: |
-            lsb_release -a
+            # lsb_release -a # /bin/bash: lsb_release: command not found
             cd ~
             # https://superuser.com/questions/426877
             # https://addons.mozilla.org/en-US/firefox/search/?q=wget
