@@ -28,7 +28,8 @@ jobs:
       # https://circleci.com/docs/2.0/circleci-images/
       # https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/android/images
       # https://en.wikipedia.org/wiki/Debian_version_history
-      - image: ubuntu:disco
+      # https://wiki.ubuntu.com/Releases
+      - image: ubuntu:hirsute # 21.04
     resource_class: medium
     steps:
       # - run:
