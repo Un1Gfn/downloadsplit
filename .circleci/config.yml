@@ -51,7 +51,7 @@ jobs:
             # https://addons.mozilla.org/en-US/firefox/search/?q=wget
             # https://addons.mozilla.org/en-US/firefox/addon/cliget
             # curl/wget ... --cookie '...' ... --output 'Final Fantasy X (Japan).7z'
-            curl --header 'Host: files.romspure.com' --user-agent 'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0' --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' --header 'Accept-Language: en-US,en;q=0.5' --referer 'https://romsforever.co/' --cookie 'cf_chl_2=3d13706088c25c0; cf_chl_prog=x9; cf_clearance=b33d5809f54352a08cd72713e758814cbe9769cc-1623601281-0-150' --header 'Upgrade-Insecure-Requests: 1' 'https://files.romspure.com/PS2/NTSC-Asia/Final%20Fantasy%20X%20%28Japan%29.7z?token=' --output 'Final Fantasy X (Japan).7z'
+            curl --header 'Host: files.romspure.com' --user-agent 'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0' --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' --header 'Accept-Language: en-US,en;q=0.5' --referer 'https://romsforever.co/' --cookie 'cf_chl_2=81a9c9ea0fc3eb1; cf_chl_prog=x8; cf_clearance=6f59df8f559879e2066a38e10819242d7467d846-1623603704-0-150' --header 'Upgrade-Insecure-Requests: 1' 'https://files.romspure.com/PS2/NTSC-Asia/Final%20Fantasy%20X%20%28Japan%29.7z?token=' --output 'Final Fantasy X (Japan).7z'
       - run:
           name: Split
           command: |
