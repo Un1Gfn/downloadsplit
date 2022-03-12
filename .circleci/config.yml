@@ -51,14 +51,17 @@ jobs:
             # https://addons.mozilla.org/en-US/firefox/search/?q=wget
             # https://addons.mozilla.org/en-US/firefox/addon/cliget
             # curl/wget ... --cookie '...' ... --output 'Final Fantasy X (Japan).7z'
-            curl --header 'Host: dl3.cdromance.com' --user-agent 'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0' --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' --header 'Accept-Language: en-US,en;q=0.5' --referer 'https://cdromance.com/ps2-iso/final-fantasy-x-japan/' --header 'Upgrade-Insecure-Requests: 1' 'https://dl3.cdromance.com/download.php?file=Final%20Fantasy%20X%20(Japan).7z&id=84551&platform=ps2-iso&key=1108617857578' --output 'Final Fantasy X (Japan).7z'
+            # curl --header 'Host: dl3.cdromance.com' --user-agent 'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0' --header 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' --header 'Accept-Language: en-US,en;q=0.5' --referer 'https://cdromance.com/ps2-iso/final-fantasy-x-japan/' --header 'Upgrade-Insecure-Requests: 1' 'https://dl3.cdromance.com/download.php?file=Final%20Fantasy%20X%20(Japan).7z&id=84551&platform=ps2-iso&key=1108617857578' --output 'Final Fantasy X (Japan).7z'
+            wget 'https://isofiles.bd581e55.workers.dev/Windows%2010/Windows%2010%20Enterprise%20LTSC%202021/en-us_windows_10_enterprise_ltsc_2021_x86_dvd_9f4aa95f.iso'
+            # no_output_timeout: 30m
+            # no_output_timeout: 1.5h
       - run:
           name: Split
           command: |
             cd ~
             mkdir split
             cd split
-            split --verbose -b $((1024*1024*1024)) ~/'Final Fantasy X (Japan).7z'
+            split --verbose -b $((1024*1024*1024)) ~/*.iso
             ls -l
             ls -lh
       - run:
@@ -66,10 +69,8 @@ jobs:
           command: |
             cd ~/split
             sha1sum * | tee sha1sum.txt
-            sha1sum ../'Final Fantasy X (Japan).7z' | tee -a sha1sum.txt
+            pushd ..; sha1sum *.iso | tee -a split/sha1sum.txt; popd
             # cat sha1sum.txt | tr -s ' ' >"sha1sum.txt".onespace
-          # no_output_timeout: 30m
-          # no_output_timeout: 1.5h
       - store_artifacts:
           # https://circleci.com/docs/2.0/artifacts/#artifacts-overview
           path: ~/split/

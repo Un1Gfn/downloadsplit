@@ -5,44 +5,36 @@
 # https://stackoverflow.com/a/12298757/8243991
 # https://stackoverflow.com/a/5920355/8243991
 
-URIPREFIX="https://8-220739498-gh.circle-artifacts.com/0/split/"
-SEGMENTS=(x{a{a..z},ba})
+URIPREFIX="https://18-220739498-gh.circle-artifacts.com/0/split/"
+SEGMENTS=(xa{a..d})
+SZ0=$((1024*1024*1024))
+SZ0_TXT="1GiB"
 
-# for i in "${SEGMENTS[@]}"; do
-#   echo "$i"
-# done
-
-function trapf {
-  echo
-  echo SIGINT
-  echo
-  exit 1
+function wget_with_timestamp {
+  printf "\e[7m %s \e[0m\n" "$(date)"
+  wget "$1"
+  printf "\e[7m %s \e[0m\n" "$(date)"
 }
- 
-trap trapf SIGINT
 
-echo
-ls -l
+[ -e sha1sum.txt ] || wget_with_timestamp "${URIPREFIX}sha1sum.txt"
 
 for i in "${SEGMENTS[@]}"; do
   echo
   if [ ! -e "$i" ]; then
-    echo -e "\033[7m $(date) \033[0m";wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
+    wget_with_timestamp "${URIPREFIX}${i}"
   else
     SZ=$(wc -c <"$i")
-    if [ "$SZ" -eq $((1024*1024*1024)) ]; then
-      echo "$i is 1GiB"
+    if [ "$SZ" -eq "$SZ0" ]; then
+      echo "$i is $SZ0_TXT"
     else
-      if [ "$i" == "${SEGMENTS[-1]}" ]; then
+      if [ "$i" = "${SEGMENTS[-1]}" ]; then
         echo "$i is the last segment"
       else
         echo "$i is $(numfmt --to=iec-i "$SZ") ($SZ bytes)"
-        # echo -n "Delete $i and download again?..."
-        # read -r
-        read -e -p "Delete $i and download again? [yn] " -r YN
-        if [ "$YN" == y ]; then
+        read -r -e -p "Delete $i and download again? [yn] " -r YN
+        if [ "$YN" = y ]; then
           rm -v "$i"
-          echo -e "\033[7m $(date) \033[0m";wget "${URIPREFIX}${i}";echo -e "\033[7m $(date) \033[0m"
+          wget_with_timestamp "${URIPREFIX}${i}"
         fi
       fi
     fi
@@ -51,4 +43,6 @@ done
 
 echo
 
-# md5sum -c md5.txt.onespace
+sha1sum -c sha1sum.txt
+
+echo
